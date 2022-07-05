@@ -11,5 +11,5 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> 
 
     Optional<DocumentEntity> findByTitle(String name);
     Optional<DocumentEntity> findAllByContentContaining(String content);
-    boolean existsByName(String name);
+    boolean existsByTitle(String name);
 }

@@ -53,6 +53,6 @@ public class DocumentGeneralServiceImpl implements GeneralService<DocumentEntity
 
     @Override
     public boolean existsByName(String name) {
-        return repository.existsByName(name);
+        return repository.existsByTitle(name);
     }
 }
