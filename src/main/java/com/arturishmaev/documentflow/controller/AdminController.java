@@ -1,9 +1,6 @@
 package com.arturishmaev.documentflow.controller;
 
-import com.arturishmaev.documentflow.dto.DepartmentDTO;
-import com.arturishmaev.documentflow.dto.EmployeeDTO;
-import com.arturishmaev.documentflow.dto.Mapper;
-import com.arturishmaev.documentflow.dto.RoleDTO;
+import com.arturishmaev.documentflow.dto.*;
 import com.arturishmaev.documentflow.entity.DepartmentEntity;
 import com.arturishmaev.documentflow.entity.EmployeeEntity;
 import com.arturishmaev.documentflow.entity.OrganizationEntity;
@@ -101,25 +98,25 @@ public class AdminController {
 
     //CRUD Organization
     @GetMapping(path = "/organization/")
-    public ResponseEntity<List<OrganizationEntity>> getAllOrganization() {
-        List<OrganizationEntity> organizations = organizationGeneralService.findAll();
+    public ResponseEntity<List<OrganizationDTO>> getAllOrganization() {
+        List<OrganizationDTO> organizations = organizationGeneralService.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
         organizations.forEach(System.out::println);
         return !organizations.isEmpty() ? new ResponseEntity<>(organizations, HttpStatus.OK)
                                        : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping(path = "/organization/{id}")
-    public ResponseEntity<OrganizationEntity> getOrganization(@PathVariable Long id) {
-        OrganizationEntity OrganizationEntity = organizationGeneralService.findById(id);
-        return OrganizationEntity != null ? new ResponseEntity<>(OrganizationEntity, HttpStatus.OK)
+    public ResponseEntity<OrganizationDTO> getOrganization(@PathVariable Long id) {
+        OrganizationEntity organizationEntity = organizationGeneralService.findById(id);
+        return organizationEntity != null ? new ResponseEntity<>(mapper.toDto(organizationEntity), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping(path = "/organization/")
-    public ResponseEntity<OrganizationEntity> createOrganization(@Valid @RequestBody OrganizationEntity organization) {
+    public ResponseEntity<OrganizationDTO> createOrganization(@Valid @RequestBody OrganizationEntity organization) {
         try {
-            organizationGeneralService.saveOrUpdate(organization);
-            return new ResponseEntity<>(organization, HttpStatus.CREATED);
+            OrganizationEntity organizationEntity = organizationGeneralService.saveOrUpdate(organization);
+            return new ResponseEntity<>(mapper.toDto(organizationEntity), HttpStatus.CREATED);
         } catch (Exception e) {
             log.warn("Organization creation error");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
